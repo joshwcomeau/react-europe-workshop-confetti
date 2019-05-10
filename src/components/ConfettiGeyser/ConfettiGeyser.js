@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
-import { normalize, random } from '../../utils';
+import { sample, normalize, random } from '../../utils';
+import DEFAULT_SPRITES from './default-sprites';
 
 const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
 
@@ -35,6 +36,10 @@ const ConfettiGeyser = ({
   // 15: moderate
   // 30: intense
   concentration,
+
+  // An array of image paths to use for sprites
+  // max size per sprite: 20x20
+  sprites = DEFAULT_SPRITES,
 }) => {
   const canvasRef = React.useRef(null);
 
@@ -62,6 +67,13 @@ const ConfettiGeyser = ({
         frictionAir: 0.04,
         collisionFilter: {
           category: null,
+        },
+        render: {
+          sprite: {
+            texture: sample(sprites),
+            xScale: 1,
+            yScale: 1,
+          },
         },
       });
 

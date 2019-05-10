@@ -14,3 +14,5 @@ export const normalize = (
   // Next, transpose that value to our desired scale.
   return (newScaleMax - newScaleMin) * standardNormalization + newScaleMin;
 };
+
+export const sample = arr => arr[Math.floor(Math.random() * arr.length)];
