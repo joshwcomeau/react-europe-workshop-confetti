@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
-import { sample, normalize, random } from '../../utils';
+import { sample, normalize, random, throttle } from '../../utils';
+
 import DEFAULT_SPRITES from './default-sprites';
 
 const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
@@ -44,6 +45,59 @@ const ConfettiGeyser = ({
   const canvasRef = React.useRef(null);
 
   const [engine, renderer] = usePhysicsEngine(canvasRef);
+
+  React.useEffect(() => {
+    let mousePosition = null;
+    let lastMoveAt = null;
+
+    const handleMouseMove = throttle(event => {
+      const { clientX, clientY } = event;
+      const newMousePosition = [clientX, clientY];
+      const newMoveAt = performance.now();
+
+      // If this is our very first recorded move, just record this timestamp for
+      // the next one
+      if (!lastMoveAt) {
+        lastMoveAt = newMoveAt;
+        mousePosition = newMousePosition;
+
+        return;
+      }
+
+      const deltaX = newMousePosition[0] - mousePosition[0];
+      const deltaY = newMousePosition[1] - mousePosition[1];
+
+      const deltaTime = newMoveAt - lastMoveAt;
+
+      const xPerSecond = (deltaX * 1000) / deltaTime;
+      const yPerSecond = (deltaY * 1000) / deltaTime;
+
+      lastMoveAt = newMoveAt;
+      mousePosition = newMousePosition;
+
+      Matter.Composite.allBodies(engine.world).forEach(body => {
+        if (body.position.y > window.innerHeight) {
+          return;
+        }
+        const aSquared = Math.pow(clientX - body.position.x, 2);
+        const bSquared = Math.pow(clientY - body.position.y, 2);
+        const distanceToMouse = Math.sqrt(aSquared + bSquared);
+
+        const dampening = 1 / distanceToMouse;
+
+        Matter.Body.setVelocity(body, {
+          x: body.velocity.x + xPerSecond * dampening,
+          y: body.velocity.y + yPerSecond * dampening,
+        });
+      });
+    }, 80);
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [engine]);
 
   React.useEffect(() => {
     const [top, left] = position;
