@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
-import { random } from '../../utils';
+import { normalize, random } from '../../utils';
 
 const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
 
@@ -14,6 +14,9 @@ const ConfettiGeyser = ({
 
   // How fast each particle should be moving
   velocity,
+
+  // How much each particle should be rotating
+  angularVelocity,
 
   // The direction that the geyser should be facing
   angle,
@@ -54,6 +57,7 @@ const ConfettiGeyser = ({
         window.clearInterval(timeoutId);
         return;
       }
+
       const confettiPiece = Matter.Bodies.rectangle(top, left, 20, 20, {
         frictionAir: 0.04,
         collisionFilter: {
@@ -61,8 +65,21 @@ const ConfettiGeyser = ({
         },
       });
 
-      let imperfectAngle = random(angle - spread / 2, angle + spread / 2);
-      let imperfectVelocity = random(
+      const spreadPercentile = Math.random();
+      const velocityPercentile = Math.random();
+
+      const imperfectAngle = normalize(
+        spreadPercentile,
+        0,
+        1,
+        angle - spread / 2,
+        angle + spread / 2
+      );
+
+      let imperfectVelocity = normalize(
+        velocityPercentile,
+        0,
+        1,
         velocity - velocity * volatility,
         velocity + velocity * volatility
       );
@@ -77,7 +94,9 @@ const ConfettiGeyser = ({
         y,
       });
 
-      Matter.Body.setAngularVelocity(confettiPiece, Math.random() * -0.6);
+      const imperfectAngularVelocity = angularVelocity * velocityPercentile;
+
+      Matter.Body.setAngularVelocity(confettiPiece, imperfectAngularVelocity);
 
       Matter.World.add(engine.world, [confettiPiece]);
     }, timePerFrame);
