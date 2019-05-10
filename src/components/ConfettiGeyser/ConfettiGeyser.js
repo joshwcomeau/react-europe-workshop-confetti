@@ -44,7 +44,7 @@ const ConfettiGeyser = ({
 }) => {
   const canvasRef = React.useRef(null);
 
-  const [engine, renderer] = usePhysicsEngine(canvasRef);
+  const [engine] = usePhysicsEngine(canvasRef);
 
   React.useEffect(() => {
     let mousePosition = null;
@@ -166,6 +166,22 @@ const ConfettiGeyser = ({
 
       Matter.World.add(engine.world, [confettiPiece]);
     }, timePerFrame);
+  });
+
+  React.useEffect(() => {
+    const BUFFER = 100;
+
+    const intervalId = window.setInterval(() => {
+      Matter.Composite.allBodies(engine.world).forEach(body => {
+        if (body.position.y > window.innerHeight + BUFFER) {
+          Matter.World.remove(engine.world, body);
+        }
+      });
+    }, 500);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, [engine]);
 
   return (
