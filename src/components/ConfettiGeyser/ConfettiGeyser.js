@@ -3,6 +3,16 @@ import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
+import { random } from '../../utils';
+
+const getRandomValueWithinRange = (value, fluctuation) => {
+  const consistency = 1 - fluctuation;
+
+  const minValue = value * consistency;
+  const maxValue = value * consistency * -1 + 2 * value;
+
+  return random(minValue, maxValue);
+};
 
 const ConfettiGeyser = ({
   // The position for the geyser.
@@ -15,8 +25,12 @@ const ConfettiGeyser = ({
   // The direction that the geyser should be facing
   angle,
 
-  // The amount of deviation from the specified angle + velocity
-  consistency,
+  // The amount of deviation from the specified angle
+  spread,
+
+  // The amount of deviation from the specified velocity
+  // TODO: Better name
+  velocityFluctuation,
 
   // The number, in milliseconds, for the geyser to run for.
   duration,
@@ -55,9 +69,20 @@ const ConfettiGeyser = ({
         },
       });
 
+      let imperfectAngle = random(angle - spread / 2, angle + spread / 2);
+      let imperfectVelocity = random(
+        velocity - velocity * velocityFluctuation,
+        velocity + velocity * velocityFluctuation
+      );
+
+      const angleInRads = (imperfectAngle * Math.PI) / 180;
+
+      const x = Math.cos(angleInRads) * imperfectVelocity;
+      const y = Math.sin(angleInRads) * imperfectVelocity;
+
       Matter.Body.setVelocity(confettiPiece, {
-        x: Math.random() * -10,
-        y: Math.random() * -24 - 4,
+        x,
+        y,
       });
 
       Matter.Body.setAngularVelocity(confettiPiece, Math.random() * -0.6);

@@ -6,10 +6,11 @@ function App() {
     <ConfettiGeyser
       position={[window.innerWidth / 2, window.innerHeight]}
       duration={2000}
-      velocity={10}
-      angle={-90}
-      consistency={0.5}
-      concentration={30}
+      velocity={15}
+      angle={-75}
+      spread={20}
+      velocityFluctuation={0.75}
+      concentration={12}
     />
   );
 }
