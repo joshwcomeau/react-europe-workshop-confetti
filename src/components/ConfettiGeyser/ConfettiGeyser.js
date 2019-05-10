@@ -5,14 +5,7 @@ import Matter from 'matter-js';
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
 import { random } from '../../utils';
 
-const getRandomValueWithinRange = (value, fluctuation) => {
-  const consistency = 1 - fluctuation;
-
-  const minValue = value * consistency;
-  const maxValue = value * consistency * -1 + 2 * value;
-
-  return random(minValue, maxValue);
-};
+const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
 
 const ConfettiGeyser = ({
   // The position for the geyser.
@@ -29,8 +22,7 @@ const ConfettiGeyser = ({
   spread,
 
   // The amount of deviation from the specified velocity
-  // TODO: Better name
-  velocityFluctuation,
+  volatility,
 
   // The number, in milliseconds, for the geyser to run for.
   duration,
@@ -71,11 +63,11 @@ const ConfettiGeyser = ({
 
       let imperfectAngle = random(angle - spread / 2, angle + spread / 2);
       let imperfectVelocity = random(
-        velocity - velocity * velocityFluctuation,
-        velocity + velocity * velocityFluctuation
+        velocity - velocity * volatility,
+        velocity + velocity * volatility
       );
 
-      const angleInRads = (imperfectAngle * Math.PI) / 180;
+      const angleInRads = convertDegreesToRadians(imperfectAngle);
 
       const x = Math.cos(angleInRads) * imperfectVelocity;
       const y = Math.sin(angleInRads) * imperfectVelocity;
