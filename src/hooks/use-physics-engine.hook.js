@@ -30,7 +30,7 @@ export default function usePhysicsEngine(ref) {
 
     setEngine(engine);
     setRenderer(renderer);
-  }, ref);
+  }, [ref]);
 
   return [engine, renderer];
 }

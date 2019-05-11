@@ -76,14 +76,11 @@ const ConfettiGeyser = ({
       mousePosition = newMousePosition;
 
       Matter.Composite.allBodies(engine.world).forEach(body => {
-        if (body.position.y > window.innerHeight) {
-          return;
-        }
         const aSquared = Math.pow(clientX - body.position.x, 2);
         const bSquared = Math.pow(clientY - body.position.y, 2);
         const distanceToMouse = Math.sqrt(aSquared + bSquared);
 
-        const dampening = 1 / distanceToMouse;
+        const dampening = (1 / distanceToMouse) * 0.1;
 
         Matter.Body.setVelocity(body, {
           x: body.velocity.x + xPerSecond * dampening,
@@ -111,9 +108,9 @@ const ConfettiGeyser = ({
 
     const startAt = performance.now();
 
-    let timeoutId = window.setInterval(() => {
+    let intervalId = window.setInterval(() => {
       if (performance.now() - startAt > duration) {
-        window.clearInterval(timeoutId);
+        window.clearInterval(intervalId);
         return;
       }
 
@@ -166,6 +163,10 @@ const ConfettiGeyser = ({
 
       Matter.World.add(engine.world, [confettiPiece]);
     }, timePerFrame);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
   });
 
   React.useEffect(() => {

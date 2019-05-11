@@ -3,30 +3,12 @@ import styled from 'styled-components';
 
 import GlobalStyles from '../GlobalStyles';
 import ConfettiGeyser from '../ConfettiGeyser';
+import GeyserPlayground from '../GeyserPlayground/GeyserPlayground';
 
 function App() {
   return (
     <Wrapper>
-      <ConfettiGeyser
-        position={[window.innerWidth * 0.2, window.innerHeight]}
-        duration={Infinity}
-        velocity={25}
-        angularVelocity={-0.6}
-        angle={-70}
-        spread={0}
-        volatility={1}
-        concentration={12}
-      />
-      <ConfettiGeyser
-        position={[window.innerWidth * 0.8, window.innerHeight]}
-        duration={Infinity}
-        velocity={25}
-        angularVelocity={-0.6}
-        angle={-110}
-        spread={40}
-        volatility={0.5}
-        concentration={12}
-      />
+      <GeyserPlayground />
 
       <GlobalStyles />
     </Wrapper>
