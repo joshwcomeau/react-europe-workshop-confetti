@@ -14,6 +14,12 @@ const ConfettiGeyser = ({
   // Specified as a tuple-like array, [top, left]
   position,
 
+  // Whether or not confetti particles should bump into each other
+  enableCollisions,
+
+  // How much air should affect velocity/gravity
+  airFriction,
+
   // How fast each particle should be moving
   velocity,
 
@@ -114,19 +120,34 @@ const ConfettiGeyser = ({
         return;
       }
 
-      const confettiPiece = Matter.Bodies.rectangle(top, left, 20, 20, {
-        frictionAir: 0.04,
-        collisionFilter: {
-          category: null,
-        },
+      const sprite = sample(sprites);
+
+      let confettiSettings = {
+        frictionAir: airFriction,
         render: {
           sprite: {
-            texture: sample(sprites),
+            texture: sprite.src,
             xScale: 1,
             yScale: 1,
           },
         },
-      });
+      };
+
+      console.log({ enableCollisions });
+
+      if (!enableCollisions) {
+        confettiSettings.collisionFilter = {
+          category: null,
+        };
+      }
+
+      const confettiPiece = Matter.Bodies.rectangle(
+        top,
+        left,
+        sprite.width,
+        sprite.height,
+        confettiSettings
+      );
 
       const spreadPercentile = Math.random();
       const velocityPercentile = Math.random();

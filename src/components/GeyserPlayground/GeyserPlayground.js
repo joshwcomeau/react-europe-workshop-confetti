@@ -2,24 +2,29 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ConfettiGeyser from '../ConfettiGeyser';
-import SliderControl from '../SliderControl';
+
+import PlaygroundControl from './PlaygroundControl';
 
 const GeyserPlayground = () => {
   const [position, setPosition] = React.useState([
     window.innerWidth / 2,
     window.innerHeight,
   ]);
+  const [enableCollisions, setEnableCollisions] = React.useState(true);
+  const [airFriction, setAirFriction] = React.useState(0.04);
   const [velocity, setVelocity] = React.useState(29);
-  const [angularVelocity, setAngularVelocity] = React.useState(-0.6);
+  const [angularVelocity, setAngularVelocity] = React.useState(0.6);
   const [angle, setAngle] = React.useState(-90);
   const [spread, setSpread] = React.useState(20);
   const [volatility, setVolatility] = React.useState(0.75);
-  const [concentration, setConcentration] = React.useState(60);
+  const [concentration, setConcentration] = React.useState(20);
 
   return (
     <>
       <ConfettiGeyser
         position={position}
+        enableCollisions={enableCollisions}
+        airFriction={airFriction}
         velocity={velocity}
         angularVelocity={angularVelocity}
         angle={angle}
@@ -29,36 +34,57 @@ const GeyserPlayground = () => {
       />
 
       <Controls>
-        <SliderControl
+        <PlaygroundControl
+          kind="boolean"
+          label="Enable Collisions"
+          value={enableCollisions}
+          setValue={setEnableCollisions}
+        />
+
+        <PlaygroundControl
+          kind="slider"
+          label="Air Friction"
+          min={0}
+          max={0.1}
+          step={0.001}
+          value={airFriction}
+          setValue={setAirFriction}
+        />
+        <PlaygroundControl
+          kind="slider"
           label="Velocity"
           min={5}
           max={50}
           value={velocity}
           setValue={setVelocity}
         />
-        <SliderControl
+        <PlaygroundControl
+          kind="slider"
           label="Angle"
           min={-180}
           max={0}
           value={angle}
           setValue={setAngle}
         />
-        <SliderControl
+        <PlaygroundControl
+          kind="slider"
           label="Angular Velocity"
-          min={-2}
+          min={0}
           max={2}
           step={0.01}
           value={angularVelocity}
           setValue={setAngularVelocity}
         />
-        <SliderControl
+        <PlaygroundControl
+          kind="slider"
           label="Spread"
           min={0}
           max={90}
           value={spread}
           setValue={setSpread}
         />
-        <SliderControl
+        <PlaygroundControl
+          kind="slider"
           label="Volatility"
           min={0}
           max={1}
@@ -66,7 +92,8 @@ const GeyserPlayground = () => {
           value={volatility}
           setValue={setVolatility}
         />
-        <SliderControl
+        <PlaygroundControl
+          kind="slider"
           label="Concentration"
           min={5}
           max={100}
