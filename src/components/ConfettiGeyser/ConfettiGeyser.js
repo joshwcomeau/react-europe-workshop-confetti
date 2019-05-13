@@ -133,8 +133,6 @@ const ConfettiGeyser = ({
         },
       };
 
-      console.log({ enableCollisions });
-
       if (!enableCollisions) {
         confettiSettings.collisionFilter = {
           category: null,
