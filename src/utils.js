@@ -1,3 +1,5 @@
+export const range = n => Array.from(Array(n).keys());
+
 export const random = (min, max) => Math.random() * (max - min) + min;
 
 export const normalize = (
