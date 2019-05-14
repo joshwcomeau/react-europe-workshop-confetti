@@ -10,6 +10,27 @@ import DEFAULT_SPRITES from './default-sprites';
 
 const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
 
+const useGeneratedParticles = (engine, position, angle, velocity) => {
+  if (!engine) {
+    return;
+  }
+
+  const [top, left] = position;
+
+  range(10).forEach(() => {
+    const particle = Matter.Bodies.rectangle(top, left, 20, 20);
+
+    const angleInRads = convertDegreesToRadians(angle);
+
+    const x = Math.cos(angleInRads) * velocity;
+    const y = Math.sin(angleInRads) * velocity;
+
+    Matter.Body.setVelocity(particle, { x, y });
+
+    Matter.World.add(engine.world, [particle]);
+  });
+};
+
 const ConfettiGeyser = ({
   // The position for the geyser.
   // Specified as a tuple-like array, [top, left]
@@ -48,6 +69,8 @@ const ConfettiGeyser = ({
   const canvasRef = React.useRef(null);
 
   const [engine] = usePhysicsEngine(canvasRef);
+
+  useGeneratedParticles(engine, position, angle, velocity);
 
   return (
     <Wrapper>
