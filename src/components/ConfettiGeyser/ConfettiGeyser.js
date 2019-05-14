@@ -4,20 +4,29 @@ import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
+import useInterval from '../../hooks/use-interval.hook';
 import { range } from '../../utils';
 
 import DEFAULT_SPRITES from './default-sprites';
 
 const convertDegreesToRadians = angle => (angle * Math.PI) / 180;
 
-const useGeneratedParticles = (engine, position, angle, velocity) => {
-  if (!engine) {
-    return;
-  }
+const useGeneratedParticles = (
+  engine,
+  position,
+  angle,
+  velocity,
+  concentration
+) => {
+  const timeBetweenParticles = 1000 / concentration;
 
-  const [top, left] = position;
+  useInterval(() => {
+    if (!engine) {
+      return;
+    }
 
-  range(10).forEach(() => {
+    const [top, left] = position;
+
     const particle = Matter.Bodies.rectangle(top, left, 20, 20);
 
     const angleInRads = convertDegreesToRadians(angle);
@@ -28,7 +37,7 @@ const useGeneratedParticles = (engine, position, angle, velocity) => {
     Matter.Body.setVelocity(particle, { x, y });
 
     Matter.World.add(engine.world, [particle]);
-  });
+  }, timeBetweenParticles);
 };
 
 const ConfettiGeyser = ({
@@ -70,7 +79,7 @@ const ConfettiGeyser = ({
 
   const [engine] = usePhysicsEngine(canvasRef);
 
-  useGeneratedParticles(engine, position, angle, velocity);
+  useGeneratedParticles(engine, position, angle, velocity, concentration);
 
   return (
     <Wrapper>
