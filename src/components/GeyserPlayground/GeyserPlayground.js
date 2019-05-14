@@ -11,7 +11,7 @@ const GeyserPlayground = () => {
     window.innerHeight,
   ]);
 
-  const [enableCollisions, setEnableCollisions] = React.useState(true);
+  const [enableCollisions, setEnableCollisions] = React.useState(false);
   const [airFriction, setAirFriction] = React.useState(0.04);
   const [velocity, setVelocity] = React.useState(29);
   const [angularVelocity, setAngularVelocity] = React.useState(0.6);
