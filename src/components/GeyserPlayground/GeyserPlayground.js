@@ -6,10 +6,11 @@ import ConfettiGeyser from '../ConfettiGeyser';
 import PlaygroundControl from './PlaygroundControl';
 
 const GeyserPlayground = () => {
-  const [position, setPosition] = React.useState([
+  const [position] = React.useState([
     window.innerWidth / 2,
     window.innerHeight,
   ]);
+
   const [enableCollisions, setEnableCollisions] = React.useState(true);
   const [airFriction, setAirFriction] = React.useState(0.04);
   const [velocity, setVelocity] = React.useState(29);

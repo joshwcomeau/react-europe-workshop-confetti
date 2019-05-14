@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import GlobalStyles from '../GlobalStyles';
-import ConfettiGeyser from '../ConfettiGeyser';
 import GeyserPlayground from '../GeyserPlayground/GeyserPlayground';
 
 function App() {

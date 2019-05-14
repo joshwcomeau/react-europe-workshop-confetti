@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
 import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
-import { range, sample, normalize, random, throttle } from '../../utils';
+import { range } from '../../utils';
 
 import DEFAULT_SPRITES from './default-sprites';
 
@@ -35,9 +36,6 @@ const ConfettiGeyser = ({
   // The amount of deviation from the specified velocity
   volatility,
 
-  // The number, in milliseconds, for the geyser to run for.
-  duration,
-
   // The rate of particles fired, specified as # per second
   // 4: slow
   // 15: moderate
@@ -51,27 +49,6 @@ const ConfettiGeyser = ({
   const canvasRef = React.useRef(null);
 
   const [engine] = usePhysicsEngine(canvasRef);
-
-  React.useEffect(() => {
-    if (!engine) {
-      return;
-    }
-
-    const [top, left] = position;
-
-    range(10).forEach(() => {
-      const particle = Matter.Bodies.rectangle(top, left, 20, 20);
-
-      const angleInRads = convertDegreesToRadians(angle);
-
-      const x = Math.cos(angle) * velocity;
-      const y = Math.sin(angle) * velocity;
-
-      Matter.Body.setVelocity(particle, { x, y });
-
-      Matter.World.add(engine.world, [particle]);
-    });
-  }, [engine]);
 
   return (
     <Wrapper>

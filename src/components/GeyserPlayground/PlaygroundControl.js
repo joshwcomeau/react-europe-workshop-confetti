@@ -28,6 +28,10 @@ const PlaygroundControl = ({ label, value, setValue, kind, ...inputProps }) => {
       );
       break;
     }
+
+    default: {
+      throw new Error('Unrecognized kind');
+    }
   }
   return (
     <Wrapper style={{ display: 'block' }}>
