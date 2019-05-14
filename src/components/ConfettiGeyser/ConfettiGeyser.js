@@ -40,6 +40,20 @@ const useGeneratedParticles = (
   }, timeBetweenParticles);
 };
 
+const useParticleCleanup = engine => {
+  useInterval(() => {
+    if (!engine) {
+      return;
+    }
+
+    Matter.Composite.allBodies(engine.world).forEach(particle => {
+      if (particle.position.y > window.innerHeight) {
+        Matter.World.remove(engine.world, particle);
+      }
+    });
+  }, 500);
+};
+
 const ConfettiGeyser = ({
   // The position for the geyser.
   // Specified as a tuple-like array, [top, left]
@@ -80,6 +94,7 @@ const ConfettiGeyser = ({
   const [engine] = usePhysicsEngine(canvasRef);
 
   useGeneratedParticles(engine, position, angle, velocity, concentration);
+  useParticleCleanup(engine);
 
   return (
     <Wrapper>
