@@ -5,7 +5,7 @@ import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
 import useInterval from '../../hooks/use-interval.hook';
-import { range } from '../../utils';
+import { range, sample } from '../../utils';
 
 import DEFAULT_SPRITES from './default-sprites';
 
@@ -27,7 +27,21 @@ const useGeneratedParticles = (
 
     const [top, left] = position;
 
-    const particle = Matter.Bodies.rectangle(top, left, 20, 20);
+    const sprite = sample(DEFAULT_SPRITES);
+
+    const particle = Matter.Bodies.rectangle(
+      top,
+      left,
+      sprite.width,
+      sprite.height,
+      {
+        render: {
+          sprite: {
+            texture: sprite.src,
+          },
+        },
+      }
+    );
 
     const angleInRads = convertDegreesToRadians(angle);
 
