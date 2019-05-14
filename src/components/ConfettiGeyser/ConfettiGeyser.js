@@ -16,7 +16,10 @@ const useGeneratedParticles = (
   position,
   angle,
   velocity,
-  concentration
+  concentration,
+  airFriction,
+  angularVelocity,
+  enableCollisions
 ) => {
   const timeBetweenParticles = 1000 / concentration;
 
@@ -29,18 +32,27 @@ const useGeneratedParticles = (
 
     const sprite = sample(DEFAULT_SPRITES);
 
+    const config = {
+      frictionAir: airFriction * sprite.airFrictionMultiplier,
+      render: {
+        sprite: {
+          texture: sprite.src,
+        },
+      },
+    };
+
+    if (!enableCollisions) {
+      config.collisionFilter = {
+        category: null,
+      };
+    }
+
     const particle = Matter.Bodies.rectangle(
       top,
       left,
       sprite.width,
       sprite.height,
-      {
-        render: {
-          sprite: {
-            texture: sprite.src,
-          },
-        },
-      }
+      config
     );
 
     const angleInRads = convertDegreesToRadians(angle);
@@ -49,6 +61,7 @@ const useGeneratedParticles = (
     const y = Math.sin(angleInRads) * velocity;
 
     Matter.Body.setVelocity(particle, { x, y });
+    Matter.Body.setAngularVelocity(particle, angularVelocity);
 
     Matter.World.add(engine.world, [particle]);
   }, timeBetweenParticles);
@@ -107,7 +120,16 @@ const ConfettiGeyser = ({
 
   const [engine] = usePhysicsEngine(canvasRef);
 
-  useGeneratedParticles(engine, position, angle, velocity, concentration);
+  useGeneratedParticles(
+    engine,
+    position,
+    angle,
+    velocity,
+    concentration,
+    airFriction,
+    angularVelocity,
+    enableCollisions
+  );
   useParticleCleanup(engine);
 
   return (
