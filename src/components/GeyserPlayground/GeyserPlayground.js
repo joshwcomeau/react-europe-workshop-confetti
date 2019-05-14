@@ -15,7 +15,7 @@ const GeyserPlayground = () => {
   const [airFriction, setAirFriction] = React.useState(0.04);
   const [velocity, setVelocity] = React.useState(29);
   const [angularVelocity, setAngularVelocity] = React.useState(0.6);
-  const [angle, setAngle] = React.useState(-90);
+  const [angle, setAngle] = React.useState(-80);
   const [spread, setSpread] = React.useState(20);
   const [volatility, setVolatility] = React.useState(0.75);
   const [concentration, setConcentration] = React.useState(20);
