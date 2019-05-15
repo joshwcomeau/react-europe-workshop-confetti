@@ -5,7 +5,7 @@ import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
 import useInterval from '../../hooks/use-interval.hook';
-import { range, sample } from '../../utils';
+import { range, sample, random, normalize } from '../../utils';
 
 import DEFAULT_SPRITES from './default-sprites';
 
@@ -19,7 +19,9 @@ const useGeneratedParticles = (
   concentration,
   airFriction,
   angularVelocity,
-  enableCollisions
+  enableCollisions,
+  volatility,
+  spread
 ) => {
   const timeBetweenParticles = 1000 / concentration;
 
@@ -55,10 +57,17 @@ const useGeneratedParticles = (
       config
     );
 
-    const angleInRads = convertDegreesToRadians(angle);
+    const particleAngle = random(angle - spread, angle + spread);
 
-    const x = Math.cos(angleInRads) * velocity;
-    const y = Math.sin(angleInRads) * velocity;
+    const particleVelocity = random(
+      velocity - velocity * volatility,
+      velocity + velocity * volatility
+    );
+
+    const particleAngleInRads = convertDegreesToRadians(particleAngle);
+
+    const x = Math.cos(particleAngleInRads) * particleVelocity;
+    const y = Math.sin(particleAngleInRads) * particleVelocity;
 
     Matter.Body.setVelocity(particle, { x, y });
     Matter.Body.setAngularVelocity(particle, angularVelocity);
@@ -128,7 +137,9 @@ const ConfettiGeyser = ({
     concentration,
     airFriction,
     angularVelocity,
-    enableCollisions
+    enableCollisions,
+    volatility,
+    spread
   );
   useParticleCleanup(engine);
 
