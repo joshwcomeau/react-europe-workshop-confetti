@@ -139,18 +139,37 @@ const useMouseWind = engine => {
       const xPerSecond = (deltaX * 1000) / deltaTime;
       const yPerSecond = (deltaY * 1000) / deltaTime;
 
-      const multiplier = 0.00000001;
+      const multiplier = 0.000001;
 
-      let xEffect = xPerSecond * multiplier;
-      let yEffect = yPerSecond * multiplier;
+      let maxXEffect = xPerSecond * multiplier;
+      let maxYEffect = yPerSecond * multiplier;
 
       lastMousePosition = newLastMousePosition;
       lastMoveAt = newLastMoveAt;
 
       Matter.Composite.allBodies(engine.world).forEach(particle => {
+        // We now have a Δx and a Δy for how far the particle is moving per
+        // second in each direction, and we have to convert that into a
+        // force we can apply onto each particle.
+        const aSquared = (clientX - particle.position.x) ** 2;
+        const bSquared = (clientY - particle.position.y) ** 2;
+        const distanceToMouse = Math.sqrt(aSquared + bSquared);
+
+        // If the mouse is more than `threshold` away, don't pay attention to
+        // it. This is partially a performance thing (to avoid applying a force
+        // to an item with a negligible effect), but also to help make sure that
+        // wind feels properly localized. It shouldn't affect things more than
+        // `threshold` pixels away.
+        const threshold = 300;
+        if (distanceToMouse > threshold) {
+          return;
+        }
+
+        const dampening = 1 / distanceToMouse;
+
         Matter.Body.applyForce(particle, particle.position, {
-          x: xEffect,
-          y: yEffect,
+          x: maxXEffect * dampening,
+          y: maxYEffect * dampening,
         });
       });
     }, 80);
