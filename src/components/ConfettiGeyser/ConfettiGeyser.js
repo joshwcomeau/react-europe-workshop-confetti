@@ -42,8 +42,7 @@ const ConfettiGeyser = ({
   // 30: intense
   concentration,
 
-  // An array of image paths to use for sprites
-  // max size per sprite: 20x20
+  // An array of "sprite" objects, to be sampled from for each particle.
   sprites = DEFAULT_SPRITES,
 }) => {
   const canvasRef = React.useRef(null);
