@@ -5,7 +5,7 @@ import Matter from 'matter-js';
 
 import usePhysicsEngine from '../../hooks/use-physics-engine.hook';
 import useInterval from '../../hooks/use-interval.hook';
-import { range, sample, random, normalize } from '../../utils';
+import { range, sample, random, normalize, throttle, clamp } from '../../utils';
 
 import DEFAULT_SPRITES from './default-sprites';
 
@@ -114,6 +114,55 @@ const useParticleCleanup = engine => {
   }, 500);
 };
 
+const useMouseWind = engine => {
+  React.useEffect(() => {
+    let lastMousePosition = null;
+    let lastMoveAt = null;
+
+    const handleMouseMove = throttle(event => {
+      const { clientX, clientY } = event;
+
+      const newLastMousePosition = [clientX, clientY];
+      const newLastMoveAt = performance.now() / 1000;
+
+      if (!lastMoveAt) {
+        lastMoveAt = newLastMoveAt;
+        lastMousePosition = newLastMousePosition;
+
+        return;
+      }
+
+      const deltaX = newLastMousePosition[0] - lastMousePosition[0];
+      const deltaY = newLastMousePosition[1] - lastMousePosition[1];
+      const deltaTime = newLastMoveAt - lastMoveAt;
+
+      const xPerSecond = (deltaX * 1000) / deltaTime;
+      const yPerSecond = (deltaY * 1000) / deltaTime;
+
+      const multiplier = 0.00000001;
+
+      let xEffect = xPerSecond * multiplier;
+      let yEffect = yPerSecond * multiplier;
+
+      lastMousePosition = newLastMousePosition;
+      lastMoveAt = newLastMoveAt;
+
+      Matter.Composite.allBodies(engine.world).forEach(particle => {
+        Matter.Body.applyForce(particle, particle.position, {
+          x: xEffect,
+          y: yEffect,
+        });
+      });
+    }, 80);
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [engine]);
+};
+
 const ConfettiGeyser = ({
   // The position for the geyser.
   // Specified as a tuple-like array, [top, left]
@@ -166,6 +215,8 @@ const ConfettiGeyser = ({
     spread
   );
   useParticleCleanup(engine);
+
+  useMouseWind(engine);
 
   return (
     <Wrapper>
