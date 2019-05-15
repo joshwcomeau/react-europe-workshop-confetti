@@ -59,9 +59,33 @@ const useGeneratedParticles = (
 
     const particleAngle = random(angle - spread, angle + spread);
 
-    const particleVelocity = random(
+    const velocityMultiple = Math.random();
+
+    // `normalize` maps a value from one range to another.
+    // Our `velocityMultiple` is a random number between 0 and 1, and we want
+    // to map that value to the current range of our velocity/angularVelocity,
+    // based on volatility.
+    //
+    // eg. if velocity is 50 and volatility is 0.5, our velocity range is
+    // 25-75. This does the following mapping for `velocityMultiple`:
+    //
+    //   0    -> 25
+    //   0.5  -> 50
+    //   0.75 -> 62.5
+    //   1    -> 75
+    const particleVelocity = normalize(
+      velocityMultiple,
+      0,
+      1,
       velocity - velocity * volatility,
       velocity + velocity * volatility
+    );
+    const particleAngularVelocity = normalize(
+      velocityMultiple,
+      0,
+      1,
+      angularVelocity - angularVelocity * volatility,
+      angularVelocity + angularVelocity * volatility
     );
 
     const particleAngleInRads = convertDegreesToRadians(particleAngle);
@@ -70,7 +94,7 @@ const useGeneratedParticles = (
     const y = Math.sin(particleAngleInRads) * particleVelocity;
 
     Matter.Body.setVelocity(particle, { x, y });
-    Matter.Body.setAngularVelocity(particle, angularVelocity);
+    Matter.Body.setAngularVelocity(particle, particleAngularVelocity);
 
     Matter.World.add(engine.world, [particle]);
   }, timeBetweenParticles);
