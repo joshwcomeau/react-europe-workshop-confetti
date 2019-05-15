@@ -10,25 +10,25 @@ export default [
     src: squiggleSvg,
     width: 51,
     height: 18,
-    airFrictionMultiplier: 2,
+    airFrictionMultiplier: 0.75,
   },
   {
     src: rectSvg,
     width: 12,
     height: 18,
-    airFrictionMultiplier: 0.8,
+    airFrictionMultiplier: 1.2,
   },
   {
     src: circleSvg,
     width: 16,
     height: 16,
-    airFrictionMultiplier: 0.6,
+    airFrictionMultiplier: 1.15,
   },
   {
     src: xSvg,
     width: 20,
     height: 20,
-    airFrictionMultiplier: 1.2,
+    airFrictionMultiplier: 0.9,
   },
   {
     src: openCircleSvg,
@@ -40,6 +40,6 @@ export default [
     src: zigzagSvg,
     width: 33,
     height: 18,
-    airFrictionMultiplier: 1.3,
+    airFrictionMultiplier: 0.8,
   },
 ];
