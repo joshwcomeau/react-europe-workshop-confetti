@@ -1,14 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ConfettiGeyser from '../ConfettiGeyser';
+import useWindowDimensions from '../../hooks/use-window-dimensions.hook';
 
+import ConfettiGeyser from '../ConfettiGeyser';
 import PlaygroundControl from './PlaygroundControl';
 
 const GeyserPlayground = () => {
-  const [position] = React.useState([
-    window.innerWidth / 2,
-    window.innerHeight,
+  const windowDimensions = useWindowDimensions();
+
+  const [position, setPosition] = React.useState([
+    windowDimensions.width,
+    windowDimensions.height / 2,
   ]);
 
   const [enableCollisions, setEnableCollisions] = React.useState(false);
@@ -19,6 +22,10 @@ const GeyserPlayground = () => {
   const [spread, setSpread] = React.useState(20);
   const [volatility, setVolatility] = React.useState(0.75);
   const [concentration, setConcentration] = React.useState(20);
+
+  React.useEffect(() => {
+    setPosition([windowDimensions.width / 2, windowDimensions.height]);
+  }, [windowDimensions]);
 
   return (
     <>
