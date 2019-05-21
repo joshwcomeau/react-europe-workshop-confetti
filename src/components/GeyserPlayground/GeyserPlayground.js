@@ -3,33 +3,30 @@ import styled from 'styled-components';
 
 import useWindowDimensions from '../../hooks/use-window-dimensions.hook';
 
-import ConfettiGeyser from '../ConfettiGeyser';
+import BurstGeyser from '../BurstGeyser';
 import PlaygroundControl from './PlaygroundControl';
 
 const GeyserPlayground = () => {
   const windowDimensions = useWindowDimensions();
 
-  const [position, setPosition] = React.useState([
-    windowDimensions.width,
-    windowDimensions.height / 2,
-  ]);
+  const [position, setPosition] = React.useState([0, windowDimensions.height]);
 
   const [enableCollisions, setEnableCollisions] = React.useState(false);
   const [airFriction, setAirFriction] = React.useState(0.04);
   const [velocity, setVelocity] = React.useState(29);
   const [angularVelocity, setAngularVelocity] = React.useState(0.6);
-  const [angle, setAngle] = React.useState(-80);
-  const [spread, setSpread] = React.useState(20);
-  const [volatility, setVolatility] = React.useState(0.75);
+  const [angle, setAngle] = React.useState(-45);
+  const [spread, setSpread] = React.useState(5);
+  const [volatility, setVolatility] = React.useState(0.6);
   const [concentration, setConcentration] = React.useState(20);
 
   React.useEffect(() => {
-    setPosition([windowDimensions.width / 2, windowDimensions.height]);
+    setPosition([0, windowDimensions.height]);
   }, [windowDimensions]);
 
   return (
     <>
-      <ConfettiGeyser
+      <BurstGeyser
         position={position}
         enableCollisions={enableCollisions}
         airFriction={airFriction}

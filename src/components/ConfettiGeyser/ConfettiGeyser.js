@@ -17,6 +17,7 @@ const useGeneratedParticles = (
   angle,
   velocity,
   concentration,
+  duration,
   airFriction,
   angularVelocity,
   enableCollisions,
@@ -24,9 +25,14 @@ const useGeneratedParticles = (
   spread
 ) => {
   const timeBetweenParticles = 1000 / concentration;
+  const startAt = performance.now();
 
   useInterval(() => {
     if (!engine) {
+      return;
+    }
+
+    if (performance.now() > startAt + duration) {
       return;
     }
 
@@ -214,6 +220,10 @@ const ConfettiGeyser = ({
   // 30: intense
   concentration,
 
+  // How long to emit confetti for.
+  // The default value, Infinity, means that it will never stop
+  duration = Infinity,
+
   // An array of "sprite" objects, to be sampled from for each particle.
   sprites = DEFAULT_SPRITES,
 }) => {
@@ -227,6 +237,7 @@ const ConfettiGeyser = ({
     angle,
     velocity,
     concentration,
+    duration,
     airFriction,
     angularVelocity,
     enableCollisions,
