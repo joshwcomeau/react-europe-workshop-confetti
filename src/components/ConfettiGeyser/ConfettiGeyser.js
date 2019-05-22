@@ -122,6 +122,10 @@ const useParticleCleanup = engine => {
 
 const useMouseWind = engine => {
   React.useEffect(() => {
+    if (!engine) {
+      return null;
+    }
+
     let lastMousePosition = null;
     let lastMoveAt = null;
 
