@@ -123,7 +123,7 @@ const useParticleCleanup = engine => {
 const useMouseWind = engine => {
   React.useEffect(() => {
     if (!engine) {
-      return null;
+      return;
     }
 
     let lastMousePosition = null;
@@ -133,7 +133,7 @@ const useMouseWind = engine => {
       const { clientX, clientY } = event;
 
       const newLastMousePosition = [clientX, clientY];
-      const newLastMoveAt = performance.now() / 1000;
+      const newLastMoveAt = performance.now();
 
       if (!lastMoveAt) {
         lastMoveAt = newLastMoveAt;
@@ -146,10 +146,10 @@ const useMouseWind = engine => {
       const deltaY = newLastMousePosition[1] - lastMousePosition[1];
       const deltaTime = newLastMoveAt - lastMoveAt;
 
-      const xPerSecond = (deltaX * 1000) / deltaTime;
-      const yPerSecond = (deltaY * 1000) / deltaTime;
+      const xPerSecond = deltaX / deltaTime;
+      const yPerSecond = deltaY / deltaTime;
 
-      const multiplier = 0.000001;
+      const multiplier = 0.5;
 
       let maxXEffect = xPerSecond * multiplier;
       let maxYEffect = yPerSecond * multiplier;
